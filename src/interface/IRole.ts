@@ -1,7 +1,5 @@
-import mongoose, { Document } from 'mongoose';
-
 export interface Irole extends Document {
-    role: String,
+    role: string,
     access: {
         add: boolean,
         view: boolean,
@@ -15,15 +13,4 @@ export interface Access {
         view: boolean,
         edit: boolean,
         delete: boolean
-}
-export interface updateRoleInput {
-    id: String,
-    role: String,
-    access: {
-        add: boolean,
-        view: boolean,
-        edit: boolean,
-        delete: boolean,
-    },
-    permission: [String],
 }

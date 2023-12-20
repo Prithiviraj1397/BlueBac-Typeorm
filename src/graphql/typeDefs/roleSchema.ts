@@ -3,7 +3,7 @@ export default `
 scalar Date
 
 type Role {
-    _id: ID!,
+    id: ID!,
     role: String!
     access: Access!
     permission:[String]
@@ -43,13 +43,6 @@ type PaginateRoleResponse{
     data: [Role]
 }
 
-input updateRoleInput{
-    id:ID!
-    role: String
-    access: AccessInput
-    permission:[String]
-}
-
 type updateRoleResponse{
     status:Boolean!
     message:String!
@@ -62,7 +55,7 @@ type Query{
 
 type Mutation{
     createRole(role: String!,access: AccessInput,permission:[String]): CreateRoleResponse!
-    updateRole(Input:updateRoleInput):updateRoleResponse!
+    updateRole( id:ID!,role: String,access: AccessInput,permission:[String]):updateRoleResponse!
     deleteRole(id:String!):deleteInputResponse!
 }
 `
