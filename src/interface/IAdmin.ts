@@ -1,11 +1,9 @@
-import { Document, Types } from "mongoose"
-
 export interface Iadmin extends Document {
     username: String,
     email: String,
     password: String,
     type: String,
-    role: Types.ObjectId
+    role: String
 }
 
 export interface loginInput {
@@ -14,10 +12,10 @@ export interface loginInput {
 }
 
 export interface createSubadminInput {
-    username: String,
-    email: String,
-    type: String,
-    role: Types.ObjectId
+    username: string,
+    email: string,
+    type: string,
+    role: string
 }
 
 export interface createCustomerUserInput {

@@ -1,8 +1,6 @@
-import { Entity, Column, 
-    // OneToMany
- } from 'typeorm';
+import { Entity, Column, OneToMany } from 'typeorm';
 import BaseEntity from '../baseEntity';
-// import Admin from './adminModel';
+import Admin from './admin';
 class Access {
     @Column({ type: 'boolean' })
     add: boolean;
@@ -28,6 +26,6 @@ export default class Role extends BaseEntity {
     @Column(() => Access)
     access: Access;
 
-    // @OneToMany(() => Admin, (admin) => admin.role)
-    // admins: Admin[]
+    @OneToMany(() => Admin, admin => admin.role)
+    admins: Admin[]
 }

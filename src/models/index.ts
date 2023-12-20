@@ -1,5 +1,7 @@
-import Role from './entity/roleModel';
+import Admin from './entity/admin';
+import Role from './entity/role';
 
 export {
+    Admin,
     Role,
 }
