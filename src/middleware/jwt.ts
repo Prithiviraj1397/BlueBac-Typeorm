@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import httpStatus from 'http-status';
 import config from '../config/config';
 import graphqlErrorHandler from '../utils/graphqlErrorHandler';
-import { Admin, Role } from '../models';
+// import { Admin, Role } from '../models';
 
 export const createToken = (payload: any) => {
     if (config && config.JWT.SECRET && config.JWT.EXPIRES_IN) {
@@ -21,6 +21,8 @@ export const validateToken = async (token: string | any) => {
             }
             const decode = jwt.verify(token, config.JWT.SECRET);
             return decode;
+        } else {
+            throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'JWT Configuration Pending')
         }
     } catch (error: any) {
         if (error?.name === 'TokenExpiredError') {

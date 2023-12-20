@@ -1,4 +1,6 @@
-import { Entity, Column, OneToMany } from 'typeorm';
+import { Entity, Column, 
+    // OneToMany
+ } from 'typeorm';
 import BaseEntity from '../baseEntity';
 // import Admin from './adminModel';
 class Access {

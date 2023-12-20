@@ -9,7 +9,7 @@ import bodyParser from 'body-parser';
 import config from './config/config';
 import { typeDefs, resolvers } from "./graphql/index";
 import { myDataSource } from './config/app-data-source';
-// import { validateToken } from './middleware/jwt';
+import { validateToken } from './middleware/jwt';
 
 const startServer = async () => {
     const app: Express = express();
@@ -47,8 +47,7 @@ const startServer = async () => {
         expressMiddleware(server, {
             context: async ({ req, res }: { req: Request, res: Response }) => {
                 const token = req.headers.authorization;
-                let info = token
-                //  ? await validateToken(token) : {};
+                let info = token ? await validateToken(token) : {};
                 return { req, res, info };
             },
         }),

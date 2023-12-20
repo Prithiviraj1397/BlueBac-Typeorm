@@ -11,7 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "strict": false,
-    "noUnusedLocals": true,
+    // "noUnusedLocals": true,
     "removeComments": true,
     "declaration": true,
     "sourceMap": true,
