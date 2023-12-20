@@ -1,36 +1,31 @@
-import mongoose, { model, Schema } from 'mongoose';
-import { Irole } from '../../interface/IRole';
+import { Entity, Column, OneToMany } from 'typeorm';
+import BaseEntity from '../baseEntity';
+// import Admin from './adminModel';
+class Access {
+    @Column({ type: 'boolean' })
+    add: boolean;
 
-const postSchema: Schema = new Schema({
-    role: {
-        type: String,
-        unique: true,
-        index: true,
-        require: true
-    },
-    access: {
-        add: {
-            type: Boolean,
-            require: true
-        },
-        view: {
-            type: Boolean,
-            require: true
-        },
-        edit: {
-            type: Boolean,
-            require: true
-        },
-        delete: {
-            type: Boolean,
-            require: true
-        }
-    },
-    permission: {
-        type: [String],
-        default: []
-    }
+    @Column({ type: 'boolean' })
+    view: boolean;
 
-}, { timestamps: true, versionKey: false })
+    @Column({ type: 'boolean' })
+    edit: boolean;
 
-export default model<Irole>("Role", postSchema, "Role")
+    @Column({ type: 'boolean' })
+    delete: boolean;
+}
+
+@Entity()
+export default class Role extends BaseEntity {
+    @Column({ unique: true })
+    role: string
+
+    @Column('simple-array', { nullable: true })
+    permission: string[]
+
+    @Column(() => Access)
+    access: Access;
+
+    // @OneToMany(() => Admin, (admin) => admin.role)
+    // admins: Admin[]
+}

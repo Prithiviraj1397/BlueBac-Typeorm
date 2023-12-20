@@ -1,16 +1,27 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "es2018",
+    "rootDir": "src",
+    "outDir": "dist",
     "module": "commonjs",
-    "rootDir": "./src",
-    "types": ["node"],
-    "outDir": "./dist",
+    "moduleResolution": "node",
     "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": true,
-    "skipLibCheck": true,
+    "noImplicitReturns": true,
+    "strict": false,
+    "noUnusedLocals": true,
+    "removeComments": true,
     "declaration": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
-  }
+    "sourceMap": true,
+    "inlineSources": true,
+    "typeRoots": ["./types.ts", "./node_modules/@types"],
+    "stripInternal": true,
+    "noImplicitAny": false,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": ["src/**/*"]
 }
