@@ -16,6 +16,9 @@ const getAllAdmin = async (_: any, { index, limit }: { index: number, limit: num
     const doc = await adminRepository.find({
         skip: startIndex,
         take: limit,
+        relations: {
+            role: true
+        }
     });
     const count = await adminRepository.count();
     return {
@@ -42,8 +45,7 @@ const createSubadmin = async (_: any, { username, email, type, role }: { usernam
     if (!roleData) {
         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Role Not Found');
     }
-    let password = "fffd";
-    const data = adminRepository.create({ username, email, type, role: roleData, password });
+    const data = adminRepository.create({ username, email, type, role: roleData });
     // let token = await createInviteToken({ id: data.id, email: data.email });
     // if (token) {
     //     await sendInviteEmail(data.email, token);
@@ -102,20 +104,20 @@ const createSubadmin = async (_: any, { username, email, type, role }: { usernam
 //     }
 // }
 
-// const deleteAdmin = async (_: any, { id }: { id: string }, context: any) => {
-//     let { info } = context;
-//     if (await authenticate(info, 'delete', 'Admin')) {
-//         const deleteData = await Admin.deleteOne({ _id: id });
-//         if (deleteData.deletedCount) {
-//             return {
-//                 status: 200,
-//                 message: 'Admin data deleted successfully'
-//             }
-//         } else {
-//             throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Admin data deleted failed!');
-//         }
-//     }
-// }
+const deleteAdmin = async (_: any, { id }: { id: string }, context: any) => {
+    // let { info } = context;
+    // if (await authenticate(info, 'delete', 'Admin')) {
+    const deleteData = await adminRepository.delete(id);
+    if (deleteData) {
+        return {
+            status: 200,
+            message: 'Admin data deleted successfully'
+        }
+    } else {
+        throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Admin data deleted failed!');
+    }
+    // }
+}
 
 export default {
     Query: {
@@ -125,6 +127,6 @@ export default {
         createSubadmin,
         // createCustomerAdmin,
         // createCustomerUser,
-        // deleteAdmin
+        deleteAdmin
     }
 }

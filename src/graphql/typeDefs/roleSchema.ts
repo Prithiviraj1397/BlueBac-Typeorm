@@ -3,9 +3,9 @@ export default `
 scalar Date
 
 type Role {
-    id: ID!,
-    role: String!
-    access: Access!
+    id: ID,
+    role: String
+    access: Access
     permission:[String]
     createdAt:Date
     updatedAt:Date

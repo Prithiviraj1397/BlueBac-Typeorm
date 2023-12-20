@@ -3,12 +3,12 @@ export default `
 scalar Date
 
 type Admin {
-    id: ID!
-    username: String!
-    email:String!
-    password: String!
-    type: String!
-    role : Role!
+    id: ID
+    username: String
+    email:String
+    password: String
+    type: String
+    role : Role
     createdAt:Date
     updatedAt:Date
 }
@@ -38,7 +38,7 @@ type Query{
 
 type Mutation{
     createSubadmin(username: String!,email:String!,type: TYPE,role : String!):createSubadminResponse
-  
+    deleteAdmin(id:String!):deleteInputResponse!
 }
 `
 // input CustomerUserInput{
@@ -65,4 +65,3 @@ type Mutation{
 // }
 // createCustomerAdmin(Input:CustomerAdminInput):createCustomerAdminResponse
 // createCustomerUser(Input:CustomerUserInput):createCustomerUserResponse
-// deleteAdmin(id:String!):deleteInputResponse!
