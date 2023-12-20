@@ -1,23 +1,27 @@
-// import graphqlErrorHandler from '../../utils/graphqlErrorHandler';
-// import { Entity } from '../../models';
+import graphqlErrorHandler from '../../utils/graphqlErrorHandler';
+import { AppDataSource } from '../../config/app-data-source';
+import { Role } from '../../models';
 import { Access, updateRoleInput } from '../../interface/IRole';
 // import { authenticate } from '../../middleware/jwt';
-// // import catchAsync from '../../utils/catchAsync';
-// import httpStatus from 'http-status';
-
+import catchAsync from '../../utils/catchAsync';
+import httpStatus from 'http-status';
+const roleRepository = AppDataSource.getRepository(Role);
 //Query Functions
 const getAllrole = async (_: any, { index, limit }: { index: number, limit: number }, context: any) => {
-    // let { info } = context;
+    let { info } = context;
     // if (await authenticate(info, 'view', 'Role')) {
-    //     const startIndex: any = (index - 1) * limit;
-    //     const doc = await Role.find({ role: { $ne: 'Admin' } }).sort({ _id: -1 }).limit(limit).skip(parseInt(startIndex));
-    //     const count = await Role.find({ role: { $ne: 'Admin' } }).countDocuments();
-    //     return {
-    //         total: count,
-    //         page: index,
-    //         pageSize: limit,
-    //         data: doc
-    //     }
+    const startIndex: number = (index - 1) * limit;
+    const doc = roleRepository.find({
+        skip: startIndex,
+        take: limit,
+    });
+    const count = await roleRepository.count();
+    return {
+        total: count,
+        page: index,
+        pageSize: limit,
+        data: doc
+    }
     // }
 }
 

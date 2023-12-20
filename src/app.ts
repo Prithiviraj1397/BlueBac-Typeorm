@@ -8,8 +8,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import config from './config/config';
 import { typeDefs, resolvers } from "./graphql/index";
-import { myDataSource } from './config/app-data-source';
 import { validateToken } from './middleware/jwt';
+import { AppDataSource } from './config/app-data-source';
 
 const startServer = async () => {
     const app: Express = express();
@@ -28,13 +28,6 @@ const startServer = async () => {
         ],
     });
 
-    //DB Connection
-    myDataSource.initialize().then(() => {
-        console.log(`Data source has been initialized`)
-    }).catch((err) => {
-        console.log(`Error Occured during Data source initialization  ${err}`)
-    })
-
     await server.start();
     const corsOptions = {
         origin: config?.ALLOWEDORIGIN,
@@ -52,6 +45,12 @@ const startServer = async () => {
             },
         }),
     );
+    //DB Connection
+    AppDataSource.initialize().then(() => {
+        console.log(`Data source has been initialized`)
+    }).catch((err) => {
+        console.log(`Error Occured during Data source initialization  ${err}`)
+    })
     await new Promise<void>((resolve) => httpServer.listen({ port: PORT }, resolve));
     console.log(`Server ready at http://localhost:${PORT}/graphql`);
 }

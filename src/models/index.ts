@@ -1,5 +1,5 @@
 import Role from './entity/roleModel';
 
-export default {
+export {
     Role,
 }

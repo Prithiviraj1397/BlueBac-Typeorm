@@ -1,7 +1,9 @@
+import "reflect-metadata";
 import { DataSource } from "typeorm";
 import path from "path";
+import Role from "../models/entity/roleModel";
 
-export const myDataSource = new DataSource({
+export const AppDataSource = new DataSource({
     type: "mysql",
     host: "localhost",
     port: 3306,
@@ -9,10 +11,10 @@ export const myDataSource = new DataSource({
     password: "root",
     database: "BlueBac",
     entities: [
-        path.join(__dirname, '../models/entity/**.ts')
+        Role
     ],
     migrations: ["src/config/migrations/*.ts"],
-    synchronize: true,
+    synchronize: false,
     migrationsRun: true,
     logging: false,
     // cli: {
