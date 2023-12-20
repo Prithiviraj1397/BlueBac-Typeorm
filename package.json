@@ -1,0 +1,44 @@
+{
+  "name": "bluebac",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npm run build && pm2 start ecosystem.config.json --no-daemon",
+    "build": "tsc",
+    "dev": "nodemon --exec ts-node ./src/app.ts",
+    "seed": "node --loader ts-node/esm --experimental-specifier-resolution=node ./src/config/seed.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/nodemailer": "^6.4.14",
+    "@types/validator": "^13.11.7",
+    "typescript": "^5.3.2"
+  },
+  "dependencies": {
+    "@apollo/federation": "^0.38.1",
+    "@apollo/server": "^4.9.5",
+    "@graphql-tools/load-files": "^7.0.0",
+    "@types/node": "^20.10.3",
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "graphql": "^16.8.1",
+    "http-status": "^1.7.3",
+    "jsonwebtoken": "^9.0.2",
+    "moment": "^2.29.4",
+    "mongoose": "^8.0.2",
+    "nodemailer": "^6.9.7",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.1",
+    "typeorm": "^0.3.17",
+    "validator": "^13.11.0"
+  }
+}
