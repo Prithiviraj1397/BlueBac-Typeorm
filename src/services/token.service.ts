@@ -65,14 +65,16 @@ export const verifyToken = async (token: string, type: any) => {
 };
 
 export const generateResetPasswordToken = async (email: string, data: any) => {
-  // if (config) {
-  //   const expires = moment().add(config.JWT.RESETPASSWORDEXPIRETIME, 'minutes');
-  //   const resetPasswordToken = generateToken(data._id, expires, tokenTypes.RESET_PASSWORD);
-  //   if (resetPasswordToken) {
-  //     await saveToken(resetPasswordToken, data.id, expires, tokenTypes.RESET_PASSWORD);
-  //     return resetPasswordToken;
-  //   }
-  // }
+  if (config) {
+    const expires = moment().add(config.JWT.RESETPASSWORDEXPIRETIME, 'minutes');
+    const resetPasswordToken = generateToken(data.id, expires, tokenTypes.RESET_PASSWORD);
+    // if (resetPasswordToken) {
+    await saveToken(resetPasswordToken, data.id, expires, tokenTypes.RESET_PASSWORD);
+    return resetPasswordToken;
+    // }
+  } else {
+    throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'jwt configuration not setup')
+  }
 };
 
 export const createInviteToken = async (payload: any) => {
@@ -85,13 +87,18 @@ export const createInviteToken = async (payload: any) => {
   throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'JWT is not defined in the configuration.')
 };
 
-export const checkTokenExist = async (id: string, type: string) => {
-  // const token: any = await Token.findOne({ id, type }).sort({ createdAt: -1 })
-  // const currentTime = new Date();
-  // if (token && currentTime < token.expires) {
-  //     return true;
-  // } else {
-  //     await Token.deleteMany({ id, type })
-  //     return false
-  // }
+export const checkTokenExist = async (userId: string, type: any) => {
+  const token: any = await tokenRepository.findOne({
+    where: {
+      userId,
+      type,
+    }
+  });
+  const currentTime = new Date();
+  if (token && currentTime < token.expires) {
+    return true;
+  } else {
+    await tokenRepository.delete({ userId, type })
+    return false
+  }
 }
