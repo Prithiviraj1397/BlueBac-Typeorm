@@ -19,7 +19,7 @@ export default class Admin extends BaseEntity {
     @Column({ type: 'varchar', length: 255 })
     email: string;
 
-    @Column({ type: 'varchar', length: 255, select: false, nullable: true })
+    @Column({ type: 'varchar', length: 255, nullable: true })
     password: string;
 
     @Column({ type: 'varchar', length: 50 })
@@ -39,6 +39,9 @@ export default class Admin extends BaseEntity {
     }
 
     async comparePassword(enteredPassword: string): Promise<boolean> {
+        if (this.password) {
+            return false
+        }
         return await bcrypt.compare(enteredPassword, this.password);
     }
 }

@@ -18,7 +18,7 @@ const generateToken = (userId: string, expires: any, type: string, secret = conf
     };
     return jwt.sign(payload, secret);
   } else {
-    throw Error
+    throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'jwt configuration not setup')
   }
 };
 

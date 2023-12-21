@@ -14,6 +14,7 @@ type forgetPasswordResponse{
 }
 
 type Query{
+    login(email:String!,password:String!):LoginResponse
     tokenValidate(token:String!):forgetPasswordResponse   
 }
 

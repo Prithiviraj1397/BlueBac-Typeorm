@@ -8,16 +8,16 @@ const customerAdminRepository = AppDataSource.getRepository(CustomerAdministrato
 const customerUserRepository = AppDataSource.getRepository(CustomerUser);
 
 export const sendLoginResponse = (data: any) => {
+    console.log("🚀 ~ file: user.service.ts:11 ~ sendLoginResponse ~ data:", data)
     const token = createToken({
-        id: data._id,
+        userId: data.id,
         email: data.email,
-        role: data.role
+        role: data?.role
     });
     return {
         status: httpStatus.OK,
         message: "Login Success",
-        token,
-        role: data.role
+        token: token,
     }
 }
 

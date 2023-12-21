@@ -3,13 +3,16 @@ import * as bcrypt from 'bcryptjs';
 import catchAsync from '../../utils/catchAsync';
 import httpStatus from 'http-status';
 import jwt from 'jsonwebtoken';
-import { Admin, Token } from '../../models';
+import { Admin, CustomerAdministrator, CustomerUser, Token } from '../../models';
 import config from '../../config/config';
 import { AppDataSource } from '../../config/app-data-source';
 import { verifyToken } from '../../services/token.service';
-import { getUserById } from '../../services/user.service';
-
+import { getUserById, sendLoginResponse } from '../../services/user.service';
+const adminRepository = AppDataSource.getRepository(Admin);
+const customerAdminRepository = AppDataSource.getRepository(CustomerAdministrator);
+const customerUserRepository = AppDataSource.getRepository(CustomerUser);
 const tokenRepository = AppDataSource.getRepository(Token);
+
 enum tokenTypes {
     ACCESS = 'access',
     REFRESH = 'refresh',
@@ -18,6 +21,27 @@ enum tokenTypes {
     INVITE_EMAIL = 'inviteEmail'
 };
 //Query Functions
+const login = async (_: any, { email, password }: { email: string, password: string }, context: any) => {
+    //Admin and Subadmin
+    const adminData: any = await adminRepository.findOne({ where: { email }, relations: { role: true } })
+    if (adminData && await adminData.comparePassword(password)) {
+        return sendLoginResponse(adminData)
+    }
+    //customer administrator
+    const customerAdminData: any = await customerAdminRepository.findOne({ where: { email } })
+    if (customerAdminData && await customerAdminData.comparePassword(password)) {
+        return sendLoginResponse(customerAdminData)
+    }
+    //customer user
+    const customerUserData: any = await customerUserRepository.findOne({ where: { email } })
+    if (customerUserData && await customerUserData.comparePassword(password)) {
+        return sendLoginResponse(customerUserData)
+    }
+
+    throw graphqlErrorHandler(httpStatus.BAD_REQUEST, "Invalid Email or Password");
+
+}
+
 const tokenValidate = async (_: any, { token }: { token: string }, context: any) => {
     if (config?.JWT.SECRET) {
         try {
@@ -50,7 +74,7 @@ const tokenValidate = async (_: any, { token }: { token: string }, context: any)
         throw graphqlErrorHandler(httpStatus.BAD_GATEWAY, 'Jwt configuration not setup')
     }
 }
-
+//Mutation Functions
 const inviteResetPassward = async (_: any, { token, password }: { token: string, password: string }, context: any) => {
     const invitePasswordTokenDoc = await verifyToken(token, tokenTypes.INVITE_EMAIL);
     if (invitePasswordTokenDoc) {
@@ -69,7 +93,7 @@ const inviteResetPassward = async (_: any, { token, password }: { token: string,
 
 export default {
     Query: {
-        // login,
+        login,
         // forgetPassword,
         tokenValidate
     },
