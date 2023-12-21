@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { DataSource } from "typeorm";
 import path from "path";
-import { Admin, Role, Token } from "../models";
+import { Admin, Role, Token, CustomerAdministrator,CustomerUser } from "../models";
 
 export const AppDataSource = new DataSource({
     type: "mysql",
@@ -13,7 +13,9 @@ export const AppDataSource = new DataSource({
     entities: [
         Admin,
         Role,
-        Token
+        Token,
+        CustomerAdministrator,
+        CustomerUser
     ],
     migrations: ["src/config/migrations/**/*.ts"],
     synchronize: false,
