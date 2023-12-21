@@ -39,9 +39,6 @@ export default class Admin extends BaseEntity {
     }
 
     async comparePassword(enteredPassword: string): Promise<boolean> {
-        if (this.password) {
-            return false
-        }
-        return await bcrypt.compare(enteredPassword, this.password);
+        return bcrypt.compare(enteredPassword, this.password);
     }
 }
