@@ -21,6 +21,7 @@ const generateToken = (userId: string, expires: any, type: string, secret = conf
     throw Error
   }
 };
+
 enum TokenType {
   ACCESS = 'access',
   REFRESH = 'refresh',
@@ -29,30 +30,37 @@ enum TokenType {
   INVITE_EMAIL = 'inviteEmail'
 }
 
-
-const saveToken = async (token: string, Id: string, expires: any, type: any) => {
+const saveToken = async (token: string, userId: string, expires: any, type: any) => {
   const tokenDoc = tokenRepository.create({
     token,
     expires: expires ? expires.toDate() : null,
-    id: Id,
+    userId,
     type
   });
   const newToken = await tokenRepository.save(tokenDoc)
   return newToken;
 };
 
-export const verifyToken = async (token: string, type: string) => {
+export const verifyToken = async (token: string, type: any) => {
   if (config?.JWT.SECRET) {
     try {
-      // const payload = jwt.verify(token, config?.JWT.SECRET);
-      // const tokenDoc = await Token.findOne({ token, type, id: payload.sub });
-      // if (!tokenDoc) {
-      //   throw new Error('Token not found');
-      // }
-      // return tokenDoc;
+      const payload = jwt.verify(token, config?.JWT.SECRET);
+      const tokenDoc = await tokenRepository.findOne({
+        where: {
+          token,
+          type,
+          userId: payload.sub.toString()
+        }
+      });
+      if (!tokenDoc) {
+        throw new Error('Token not found');
+      }
+      return tokenDoc;
     } catch (e) {
       throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Token Invalid / Expired')
     }
+  } else {
+    throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'jwt configuration not setup')
   }
 };
 
@@ -68,10 +76,11 @@ export const generateResetPasswordToken = async (email: string, data: any) => {
 };
 
 export const createInviteToken = async (payload: any) => {
+  console.log("🚀 ~ file: token.service.ts:71 ~ createInviteToken ~ payload:", payload)
   if (config && config.JWT.SECRET) {
-    payload.sub = payload.id;
+    payload.sub = payload.userId;
     let inviteToken = jwt.sign(payload, config?.JWT.SECRET);
-    await saveToken(inviteToken, payload.id, null, TokenType.INVITE_EMAIL);
+    await saveToken(inviteToken, payload.userId, null, TokenType.INVITE_EMAIL);
     return inviteToken;
   }
   throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'JWT is not defined in the configuration.')

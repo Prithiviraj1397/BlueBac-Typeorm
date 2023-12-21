@@ -46,11 +46,12 @@ const createSubadmin = async (_: any, { username, email, type, role }: { usernam
         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Role Not Found');
     }
     const data = adminRepository.create({ username, email, type, role: roleData });
-    let token = await createInviteToken({ id: data.id, email: data.email });
+    const newSubadmin: any = await adminRepository.save(data);
+    let token = await createInviteToken({ userId: newSubadmin.id, email: data.email });
+    console.log("🚀 ~ file: adminRes.ts:50 ~ createSubadmin ~ token:", token)
     if (token) {
         await sendInviteEmail(data.email, token);
     }
-    const newSubadmin: any = await adminRepository.save(data);
     return {
         status: true,
         message: 'Subadmin Invite Mail Sent successfullly',

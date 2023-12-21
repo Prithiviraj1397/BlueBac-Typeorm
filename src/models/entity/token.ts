@@ -13,9 +13,9 @@ export enum TokenTypes {
 }
 
 @Entity('Token')
-export default class Token extends BaseEntity{
+export default class Token extends BaseEntity {
 
-    @Column({ type: 'varchar', length: 255, unique: true })
+    @Column({ type: 'text', nullable: false })
     token: string;
 
     @Column({ type: 'timestamp', nullable: true })
