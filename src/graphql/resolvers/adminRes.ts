@@ -1,15 +1,18 @@
 import graphqlErrorHandler from '../../utils/graphqlErrorHandler';
-import { createSubadminInput } from '../../interface/IAdmin';
+import { createCustomerAdminInput, createSubadminInput } from '../../interface/IAdmin';
 import catchAsync from '../../utils/catchAsync';
 import { createToken } from '../../middleware/jwt';
 import { authenticate } from '../../middleware/jwt';
 import httpStatus from 'http-status';
-import { Admin, Role } from '../../models';
+import { Admin, CustomerAdministrator, CustomerUser, Role } from '../../models';
 import { AppDataSource } from '../../config/app-data-source';
 import { createInviteToken } from '../../services/token.service';
 import { sendInviteEmail } from '../../services/email.service';
 const adminRepository = AppDataSource.getRepository(Admin);
 const roleRepository = AppDataSource.getRepository(Role);
+const customerAdminRepository = AppDataSource.getRepository(CustomerAdministrator);
+const customerUser = AppDataSource.getRepository(CustomerUser);
+
 //Query Functions
 const getAllAdmin = async (_: any, { index, limit }: { index: number, limit: number }, context: any) => {
     // let { info } = context;
@@ -60,49 +63,51 @@ const createSubadmin = async (_: any, { username, email, type, role }: { usernam
     // }
 }
 
-// const createCustomerAdmin = async (_: any, { Input }: { Input: createCustomerAdminInput }, context: any) => {
-//     let { info } = context;
-//     if (await authenticate(info, 'add', 'Admin')) {
-//         let customerAdminData = await customerAdministrator.findOne({ email: Input.email });
-//         if (customerAdminData) {
-//             throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Email already exists');
-//         }
-//         const data: any = (await customerAdministrator.create({ ...Input }));
-//         let token = await createInviteToken({ id: data.id, email: data.email });
-//         if (token) {
-//             await sendInviteEmail(data.email, token);
-//         }
-//         return {
-//             status: true,
-//             message: 'Customer Admin Invite Mail Sent successfullly',
-//             data
-//         }
-//     }
-// }
+const createCustomerAdmin = async (_: any, { Input }: { Input: createCustomerAdminInput }, context: any) => {
+    // let { info } = context;
+    // if (await authenticate(info, 'add', 'Admin')) {
+    let customerAdminData = await customerAdminRepository.findOne({ where: { email: Input.email } });
+    if (customerAdminData) {
+        throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Email already exists');
+    }
+    const data = customerAdminRepository.create({ ...Input });
+    let newCusAdm = await customerAdminRepository.save(data);
+
+    let token = await createInviteToken({ userId: newCusAdm.id, email: data.email });
+    if (token) {
+        await sendInviteEmail(data.email, token);
+    }
+    return {
+        status: true,
+        message: 'Customer Admin Invite Mail Sent successfullly',
+        data
+    }
+    // }
+}
 
 // const createCustomerUser = async (_: any, { Input }: { Input: createCustomerUserInput }, context: any) => {
-//     let { info } = context;
-//     if (await authenticate(info, 'add', 'Admin')) {
-//         let customerUserData = await customerUser.findOne({ email: Input.email });
-//         if (customerUserData) {
-//             throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Email already exists');
-//         }
-//         let customerAdminData = await customerAdministrator.findById(Input.administrator);
-//         if (!customerAdminData) {
-//             throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Customer Administrator Not Found');
-//         }
-//         const data: any = await customerUser.create({ ...Input });
-//         let token = await createInviteToken({ id: data.id, email: data.email });
-//         if (token) {
-//             await sendInviteEmail(data.email, token);
-//         }
-//         let newCustomerUser = await customerUser.findOne({ email: data.email }).populate('administrator');
-//         return {
-//             status: true,
-//             message: 'Customer User Invite Mail Sent successfullly',
-//             data: newCustomerUser
-//         }
+//     // let { info } = context;
+//     // if (await authenticate(info, 'add', 'Admin')) {
+//     let customerUserData = await customerUser.findOne({ email: Input.email });
+//     if (customerUserData) {
+//         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Email already exists');
 //     }
+//     let customerAdminData = await customerAdministrator.findById(Input.administrator);
+//     if (!customerAdminData) {
+//         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Customer Administrator Not Found');
+//     }
+//     const data: any = await customerUser.create({ ...Input });
+//     let token = await createInviteToken({ id: data.id, email: data.email });
+//     if (token) {
+//         await sendInviteEmail(data.email, token);
+//     }
+//     let newCustomerUser = await customerUser.findOne({ email: data.email }).populate('administrator');
+//     return {
+//         status: true,
+//         message: 'Customer User Invite Mail Sent successfullly',
+//         data: newCustomerUser
+//     }
+//     // }
 // }
 
 const deleteAdmin = async (_: any, { id }: { id: string }, context: any) => {
@@ -126,7 +131,7 @@ export default {
     },
     Mutation: {
         createSubadmin,
-        // createCustomerAdmin,
+        createCustomerAdmin,
         // createCustomerUser,
         deleteAdmin
     }

@@ -31,6 +31,16 @@ type createSubadminResponse{
     data:Admin!
 }
 
+input CustomerAdminInput{
+    username:String!
+    email:String!
+}
+
+type createCustomerAdminResponse{
+    status:Boolean!
+    message:String!
+    data:CustomerAdmin!
+}
 
 type Query{
     getAllAdmin(index:Int!,limit:Int!):PaginateAdminResponse
@@ -38,6 +48,7 @@ type Query{
 
 type Mutation{
     createSubadmin(username: String!,email:String!,type: TYPE,role : String!):createSubadminResponse
+    createCustomerAdmin(Input:CustomerAdminInput):createCustomerAdminResponse
     deleteAdmin(id:String!):deleteInputResponse!
 }
 `
@@ -53,15 +64,4 @@ type Mutation{
 //     data:CustomerUser!
 // }
 
-// input CustomerAdminInput{
-//     username:String!
-//     email:String!
-// }
-
-// type createCustomerAdminResponse{
-//     status:Boolean!
-//     message:String!
-//     data:CustomerAdmin!
-// }
-// createCustomerAdmin(Input:CustomerAdminInput):createCustomerAdminResponse
 // createCustomerUser(Input:CustomerUserInput):createCustomerUserResponse

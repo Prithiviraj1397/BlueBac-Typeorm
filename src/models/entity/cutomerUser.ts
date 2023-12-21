@@ -6,7 +6,7 @@ import bcrypt from 'bcryptjs';
 import httpStatus from 'http-status';
 import graphqlErrorHandler from '../../utils/graphqlErrorHandler';
 
-@Entity({ name: "Customer User" })
+@Entity({ name: "customer_user" })
 export default class customerUser extends BaseEntity {
     @Column({ type: 'varchar', length: 255, nullable: false })
     username: string

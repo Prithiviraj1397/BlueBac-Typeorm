@@ -9,7 +9,7 @@ import { IsEmail, } from 'class-validator';
 import BaseEntity from '../baseEntity';
 import CustomerUser from './cutomerUser';
 
-@Entity({ name: 'Customer Administrator' })
+@Entity({ name: 'customer_administrator' })
 export default class CustomerAdministrator extends BaseEntity {
   @Column({ type: 'varchar', length: 255, nullable: false })
   username: string;

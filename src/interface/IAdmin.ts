@@ -25,6 +25,6 @@ export interface createCustomerUserInput {
 }
 
 export interface createCustomerAdminInput {
-    username: String,
-    email: String,
+    username: string,
+    email: string,
 }
