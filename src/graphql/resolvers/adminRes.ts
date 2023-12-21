@@ -6,6 +6,8 @@ import { authenticate } from '../../middleware/jwt';
 import httpStatus from 'http-status';
 import { Admin, Role } from '../../models';
 import { AppDataSource } from '../../config/app-data-source';
+import { createInviteToken } from '../../services/token.service';
+import { sendInviteEmail } from '../../services/email.service';
 const adminRepository = AppDataSource.getRepository(Admin);
 const roleRepository = AppDataSource.getRepository(Role);
 //Query Functions
@@ -36,20 +38,18 @@ const createSubadmin = async (_: any, { username, email, type, role }: { usernam
     // let { info } = context;
     // if (await authenticate(info, 'add', 'Admin')) {
     let adminData = await adminRepository.findOne({ where: { email } });
-    console.log("🚀 ~ file: adminRes.ts:37 ~ createSubadmin ~ adminData:", adminData)
     if (adminData) {
         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Email already exists');
     }
     let roleData = await roleRepository.findOneBy({ id: role });
-    console.log("🚀 ~ file: adminRes.ts:43 ~ createSubadmin ~ roleData:", roleData)
     if (!roleData) {
         throw graphqlErrorHandler(httpStatus.BAD_REQUEST, 'Role Not Found');
     }
     const data = adminRepository.create({ username, email, type, role: roleData });
-    // let token = await createInviteToken({ id: data.id, email: data.email });
-    // if (token) {
-    //     await sendInviteEmail(data.email, token);
-    // }
+    let token = await createInviteToken({ id: data.id, email: data.email });
+    if (token) {
+        await sendInviteEmail(data.email, token);
+    }
     const newSubadmin: any = await adminRepository.save(data);
     return {
         status: true,
