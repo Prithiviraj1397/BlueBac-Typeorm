@@ -76,7 +76,6 @@ export const generateResetPasswordToken = async (email: string, data: any) => {
 };
 
 export const createInviteToken = async (payload: any) => {
-  console.log("🚀 ~ file: token.service.ts:71 ~ createInviteToken ~ payload:", payload)
   if (config && config.JWT.SECRET) {
     payload.sub = payload.userId;
     let inviteToken = jwt.sign(payload, config?.JWT.SECRET);

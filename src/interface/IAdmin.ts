@@ -19,9 +19,9 @@ export interface createSubadminInput {
 }
 
 export interface createCustomerUserInput {
-    username: String,
-    email: String,
-    administrator: String
+    username: string,
+    email: string,
+    administrator: any
 }
 
 export interface createCustomerAdminInput {

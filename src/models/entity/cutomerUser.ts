@@ -22,7 +22,7 @@ export default class customerUser extends BaseEntity {
     status: boolean
 
     @OneToMany(() => CustomerAdministrator, (customerAdministrator) => customerAdministrator.users)
-    Administrator: CustomerAdministrator
+    administrator: CustomerAdministrator
 
     @BeforeInsert()
     async hashPassword() {

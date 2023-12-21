@@ -24,7 +24,7 @@ export default class CustomerAdministrator extends BaseEntity {
   @Column({ type: 'boolean', default: false })
   status: boolean;
 
-  @ManyToOne(() => CustomerUser, (customerUser) => customerUser.Administrator)
+  @ManyToOne(() => CustomerUser, (customerUser) => customerUser.administrator)
   users: CustomerUser
 
   @BeforeInsert()
